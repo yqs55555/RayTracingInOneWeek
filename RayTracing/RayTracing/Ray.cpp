@@ -6,7 +6,7 @@ namespace YQS
 	{
 	}
 
-	Ray::Ray(const Vector3& a = Vector3(0,0,0), const Vector3& b = Vector3(0,0,0))
+	Ray::Ray(const Vector3& a, const Vector3& b)
 		:a(a), b(b)
 	{
 	}
@@ -27,6 +27,6 @@ namespace YQS
 
 	Vector3 Ray::point_at_parameter(float t) const
 	{
-		return a + b * t;
+		return a + t * b;
 	}
 }

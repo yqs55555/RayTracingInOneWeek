@@ -29,7 +29,7 @@ namespace YQS
 		do
 		{
 			p = 2.0f * Vector3(drand48(), drand48(), drand48()) - Vector3(1, 1, 1);
-		} while (Vector3::dot(p, p) > 1.0f);
+		} while (p.squared_length() >= 1.0f);
 		return p;
 	}
 }
