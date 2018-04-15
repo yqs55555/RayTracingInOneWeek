@@ -41,21 +41,21 @@ int main()
 {
 	int nx = 800;
 	int ny = 400;
-	int ns = 200;
+	int ns = 100;
 
 	YQS::Hitable *list[5];
 	list[0] = new YQS::Sphere(YQS::Vector3(0, 0, -1), 0.5f, new YQS::Lambertian(YQS::Vector3(0.8f, 0.3f, 0.3f)));
 	list[1] = new YQS::Sphere(YQS::Vector3(0, -100.5f, -1), 100, new YQS::Lambertian(YQS::Vector3(0.8f, 0.8f, 0.0f)));
-	list[2] = new YQS::Sphere(YQS::Vector3(1, 0, -1), 0.5f, new YQS::Metal(YQS::Vector3(0.8f, 0.6f, 0.2f), 0.1f));
-	list[3] = new YQS::Sphere(YQS::Vector3(-1, 0, -1), 0.5f, new YQS::Dielectric(1.5f));
+	list[2] = new YQS::Sphere(YQS::Vector3(1.0f, 0, -1.0f), 0.5f, new YQS::Metal(YQS::Vector3(0.8f, 0.6f, 0.2f), 0.3f));
+	list[3] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), 0.5f, new YQS::Dielectric(1.5f));
 	list[4] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), -0.45f, new YQS::Dielectric(1.5f));
-	YQS::Hitable* world = new YQS::Hitable_list(list, 5);
+	YQS::Hitable* world = new YQS::Hitable_list(list, 4);
 	YQS::Camera camera;
 
 	std::ofstream outFile;
 	YQS::srand48(static_cast<unsigned int>(time(nullptr)));
 	clock_t start = clock();
-	outFile.open("world_7.ppm");
+	outFile.open("world_6.ppm");
 	outFile << "P3\n" << nx << " " << ny << "\n255\n";
 	for (int j = ny - 1; j >= 0; j--)
 	{

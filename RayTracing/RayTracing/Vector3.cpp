@@ -4,7 +4,6 @@ namespace YQS
 {
 	Vector3::Vector3()
 	{
-		Vector3(0, 0, 0);
 	}
 
 	Vector3::Vector3(float x, float y, float z)
@@ -98,14 +97,6 @@ namespace YQS
 	Vector3 Vector3::operator/=(const float scale)
 	{
 		*this = *this / scale;
-		return *this;
-	}
-
-	Vector3 Vector3::operator=(const Vector3& v)
-	{
-		e[0] = v.e[0];
-		e[1] = v.e[1];
-		e[2] = v.e[2];
 		return *this;
 	}
 

@@ -11,12 +11,12 @@ namespace YQS
 		{
 
 		}
-		virtual bool scatter(const Ray& ray_in, const Hit_record& rec, Vector3& attrnation, Ray& scattered) const override
+		bool scatter(const Ray& ray_in, const Hit_record& rec, Vector3& attenuation, Ray& scattered) const override
 		{
 			Vector3 outward_normal;
 			Vector3 reflected = reflect(ray_in.direction(), rec.normal);
 			float ni_over_nt;
-			attrnation = Vector3(1.0f, 1.0f, 1.0f);
+			attenuation = Vector3(1.0f, 1.0f, 1.0f);
 			Vector3 refracted;
 			float reflect_prob;
 			float cosine;
@@ -25,6 +25,7 @@ namespace YQS
 				outward_normal = -rec.normal;
 				ni_over_nt = ref_idx;
 				cosine = ref_idx * Vector3::dot(ray_in.direction(), rec.normal) / ray_in.direction().length();
+				cosine = sqrt(1.0f - ref_idx * ref_idx * (1.0f - cosine * cosine));
 			}
 			else
 			{
@@ -38,7 +39,6 @@ namespace YQS
 			}
 			else
 			{
-				scattered = Ray(rec.p, reflected);
 				reflect_prob = 1.0f;
 			}
 			if(drand48() < reflect_prob)

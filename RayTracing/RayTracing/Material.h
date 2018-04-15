@@ -21,7 +21,7 @@ namespace YQS
 		float discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt * dt);
 		if(discriminant > 0)
 		{
-			refracted = ni_over_nt * (v - n * dt) - n * sqrt(discriminant);
+			refracted = ni_over_nt * (uv - n * dt) - n * sqrt(discriminant);
 			return true;
 		}
 		return false;
@@ -31,6 +31,6 @@ namespace YQS
 	{
 		float r0 = (1.0f - ref_idx) / (1.0f + ref_idx);
 		r0 = r0 * r0;
-		return r0 + (1.0f - r0) * pow((1 - cosine), 5);
+		return (r0 + (1.0f - r0) * pow((1 - cosine), 5));
 	}
 }
