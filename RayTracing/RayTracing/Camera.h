@@ -1,17 +1,24 @@
 #pragma once
 #include "Ray.h"
-#include "Random.h"
 namespace YQS
 {
+#define PI 3.1415926
 	class Camera
 	{
 	public:
-		Camera()
+		Camera(Vector3 lookfrom, Vector3 lookat, Vector3 vup, float vfov, float aspect)
 		{
-			lower_left_corner = Vector3(-2.0f, -1.0f, -1.0f);
-			horizontal = Vector3(4.0f, 0.0f, 0.0f);
-			vertical = Vector3(0.0f, 2.0f, 0.0f);
-			origin = Vector3(0.0f, 0.0f, 0.0f);
+			Vector3 u, v, w;
+			float theta = vfov * PI / 180;
+			float half_height = tan(theta / 2);
+			float half_width = aspect * half_height;
+			origin = lookfrom;
+			w = Vector3::unit_vector(lookfrom - lookat);
+			u = Vector3::unit_vector(Vector3::cross(vup, w));
+			v = Vector3::cross(w, u);
+			lower_left_corner = origin - half_width * u - half_height * v - w;
+			horizontal = 2 * half_width * u;
+			vertical = 2 * half_height * v;
 		}
 		Ray get_ray(float u, float v) const
 		{
@@ -22,14 +29,4 @@ namespace YQS
 		Vector3 horizontal;
 		Vector3 vertical;
 	};
-
-	inline Vector3 random_in_unit_sphere()
-	{
-		Vector3 p;
-		do
-		{
-			p = 2.0f * Vector3(drand48(), drand48(), drand48()) - Vector3(1, 1, 1);
-		} while (p.squared_length() >= 1.0f);
-		return p;
-	}
 }

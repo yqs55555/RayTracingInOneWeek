@@ -19,8 +19,8 @@ YQS::Vector3 color(const YQS::Ray &ray, YQS::Hitable* world, int depth)
 	if (world->hit(ray, 0.0000001f, FLT_MAX, rec))
 	{
 		YQS::Ray scattered;
-		YQS::Vector3 attenuation(1,1,1);
-		if (depth < 50 && rec.mat_ptr->scatter(ray, rec, attenuation, scattered))
+		YQS::Vector3 attenuation(1, 1, 1);
+		if (depth < 500 && rec.mat_ptr->scatter(ray, rec, attenuation, scattered))
 		{
 			return attenuation * color(scattered, world, depth + 1);
 		}
@@ -39,9 +39,9 @@ YQS::Vector3 color(const YQS::Ray &ray, YQS::Hitable* world, int depth)
 
 int main()
 {
-	int nx = 800;
-	int ny = 400;
-	int ns = 100;
+	int nx = 1800;
+	int ny = 900;
+	int ns = 500;
 
 	YQS::Hitable *list[5];
 	list[0] = new YQS::Sphere(YQS::Vector3(0, 0, -1), 0.5f, new YQS::Lambertian(YQS::Vector3(0.1f, 0.2f, 0.5f)));
@@ -49,13 +49,16 @@ int main()
 	list[2] = new YQS::Sphere(YQS::Vector3(1.0f, 0, -1.0f), 0.5f, new YQS::Metal(YQS::Vector3(0.8f, 0.6f, 0.2f), 0.2f));
 	list[3] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), 0.5f, new YQS::Dielectric(1.5f));
 	list[4] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), -0.5f, new YQS::Dielectric(1.5f));
+	float R = cos(PI / 4);
+	//list[0] = new YQS::Sphere(YQS::Vector3(-R, 0, -1), R, new YQS::Lambertian(YQS::Vector3(0, 0, 1)));
+	//list[1] = new YQS::Sphere(YQS::Vector3(R, 0, -1), R, new YQS::Lambertian(YQS::Vector3(1, 0, 0)));
 	YQS::Hitable* world = new YQS::Hitable_list(list, 5);
-	YQS::Camera camera;
+	YQS::Camera camera(YQS::Vector3(-2, 2, 1), YQS::Vector3(0, 0, -1), YQS::Vector3(0, 1, 0), 90, static_cast<float>(nx) / ny);
 
 	std::ofstream outFile;
 	YQS::srand48(static_cast<unsigned int>(time(nullptr)));
 	clock_t start = clock();
-	outFile.open("world_6.ppm");
+	outFile.open("chapter9_02.ppm");
 	outFile << "P3\n" << nx << " " << ny << "\n255\n";
 	for (int j = ny - 1; j >= 0; j--)
 	{
