@@ -13,14 +13,49 @@
 #include "Metal.h"
 #include "Dielectric.h"
 
+YQS::Hitable *random_scene()
+{
+	int n = 500;
+	YQS::Hitable **list = new YQS::Hitable*[n + 1];
+	list[0] = new YQS::Sphere(YQS::Vector3(0, -1000, 0), 1000, new YQS::Lambertian(YQS::Vector3(0.5f, 0.5f, 0.5f)));
+	int i = 1;
+	for (int a = -11; a < 11; a++)
+	{
+		for (int b = -11; b < 11; b++)
+		{
+			float choose_mat = YQS::drand48();
+			YQS::Vector3 center(a + 0.9f * YQS::drand48(), 0.2f, b + 0.9f * YQS::drand48());
+			if ((center - YQS::Vector3(4, 0.2f, 0)).length() > 0.9f)
+			{
+				if (choose_mat < 0.8f)
+				{
+					list[i++] = new YQS::Sphere(center, 0.2f, new YQS::Lambertian(YQS::Vector3(YQS::drand48() * YQS::drand48(), YQS::drand48() * YQS::drand48(), YQS::drand48() * YQS::drand48())));
+				}
+				else if (choose_mat < 0.95)
+				{
+					list[i++] = new YQS::Sphere(center, 0.2f, new YQS::Metal(YQS::Vector3(0.5f*(1 + YQS::drand48()), 0.5f * (1 + YQS::drand48()), 0.5f *(1 + YQS::drand48())), 0.5f * YQS::drand48()));
+				}
+				else
+				{
+					list[i++] = new YQS::Sphere(center, 0.2f, new YQS::Dielectric(1.5f));
+				}
+			}
+		}
+	}
+	list[i++] = new YQS::Sphere(YQS::Vector3(0, 1, 0), 1.0f, new YQS::Dielectric(1.5f));
+	list[i++] = new YQS::Sphere(YQS::Vector3(-4, 1, 0), 1.0f, new YQS::Lambertian(YQS::Vector3(0.4f, 0.2f, 0.1f)));
+	list[i++] = new YQS::Sphere(YQS::Vector3(4, 1, 0), 1.0f, new YQS::Metal(YQS::Vector3(0.7f, 0.6f, 0.5f), 0.0f));
+	return new YQS::Hitable_list(list, i);
+}
+
 YQS::Vector3 color(const YQS::Ray &ray, YQS::Hitable* world, int depth)
 {
 	YQS::Hit_record rec;
-	if (world->hit(ray, 0.0000001f, FLT_MAX, rec))
+	if (world->hit(ray, 0.0001f, FLT_MAX, rec))
 	{
 		YQS::Ray scattered;
 		YQS::Vector3 attenuation(1, 1, 1);
-		if (depth < 500 && rec.mat_ptr->scatter(ray, rec, attenuation, scattered))
+		if (depth < 300 && rec.mat_ptr->scatter(ray, rec, attenuation, scattered))
 		{
 			return attenuation * color(scattered, world, depth + 1);
 		}
@@ -39,9 +74,9 @@ YQS::Vector3 color(const YQS::Ray &ray, YQS::Hitable* world, int depth)
 
 int main()
 {
-	int nx = 1800;
-	int ny = 900;
-	int ns = 500;
+	int nx = 2000;
+	int ny = 1000;
+	int ns = 300;
 
 	YQS::Hitable *list[5];
 	list[0] = new YQS::Sphere(YQS::Vector3(0, 0, -1), 0.5f, new YQS::Lambertian(YQS::Vector3(0.1f, 0.2f, 0.5f)));
@@ -49,16 +84,17 @@ int main()
 	list[2] = new YQS::Sphere(YQS::Vector3(1.0f, 0, -1.0f), 0.5f, new YQS::Metal(YQS::Vector3(0.8f, 0.6f, 0.2f), 0.2f));
 	list[3] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), 0.5f, new YQS::Dielectric(1.5f));
 	list[4] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), -0.5f, new YQS::Dielectric(1.5f));
-	float R = cos(PI / 4);
-	//list[0] = new YQS::Sphere(YQS::Vector3(-R, 0, -1), R, new YQS::Lambertian(YQS::Vector3(0, 0, 1)));
-	//list[1] = new YQS::Sphere(YQS::Vector3(R, 0, -1), R, new YQS::Lambertian(YQS::Vector3(1, 0, 0)));
-	YQS::Hitable* world = new YQS::Hitable_list(list, 5);
-	YQS::Camera camera(YQS::Vector3(-2, 2, 1), YQS::Vector3(0, 0, -1), YQS::Vector3(0, 1, 0), 90, static_cast<float>(nx) / ny);
+	YQS::Vector3 lookfrom(13, 2, 3);
+	YQS::Vector3 lookat(0, 0, 0);
+	float dist_to_focus = 10.0f;
+	float aperture = 0.1f;
+	YQS::Hitable* world = random_scene();
+	YQS::Camera camera(lookfrom, lookat, YQS::Vector3(0, 1, 0), 20, static_cast<float>(nx) / ny, aperture, dist_to_focus);
 
 	std::ofstream outFile;
 	YQS::srand48(static_cast<unsigned int>(time(nullptr)));
 	clock_t start = clock();
-	outFile.open("chapter9_02.ppm");
+	outFile.open("Chapter12_01.ppm");
 	outFile << "P3\n" << nx << " " << ny << "\n255\n";
 	for (int j = ny - 1; j >= 0; j--)
 	{

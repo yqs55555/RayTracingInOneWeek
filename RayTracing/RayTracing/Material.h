@@ -1,6 +1,8 @@
 #pragma once
 #include "Ray.h"
 #include "Hitable.h"
+#include "Random.h"
+
 namespace YQS
 {
 	class Material
