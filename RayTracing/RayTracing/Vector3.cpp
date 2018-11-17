@@ -2,7 +2,7 @@
 
 namespace YQS
 {
-	Vector3::Vector3()
+	Vector3::Vector3() : e{ 0.0f,0.0f,0.0f }
 	{
 	}
 

@@ -3,6 +3,7 @@
 
 namespace YQS
 {
+	//µÁΩ‚÷ 
 	class Dielectric : public Material
 	{
 	public:
@@ -25,7 +26,7 @@ namespace YQS
 				ni_over_nt = ref_idx;
 				//         cosine = ref_idx * dot(r_in.direction(), rec.normal) / r_in.direction().length();
 				cosine = Vector3::dot(ray_in.direction(), rec.normal) / ray_in.direction().length();
-				cosine = sqrt(1 - ref_idx*ref_idx*(1 - cosine*cosine));
+				cosine = sqrt(1 - ref_idx * ref_idx*(1 - cosine * cosine));
 			}
 			else {
 				outward_normal = rec.normal;

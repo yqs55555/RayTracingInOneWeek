@@ -1,7 +1,7 @@
 #pragma once
 #include "Material.h"
 #include "Vector3.h"
-#include "Camera.h"
+
 namespace YQS
 {
 	class Lambertian : public Material

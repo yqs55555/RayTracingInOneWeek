@@ -14,7 +14,7 @@ namespace YQS
 		Vector3 point_at_parameter(float t) const;
 
 	private:
-		Vector3 a;
-		Vector3 b;
+		Vector3 a;	//起始点
+		Vector3 b;	//ray的方向
 	};
 }
