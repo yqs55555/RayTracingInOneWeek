@@ -8,7 +8,7 @@ namespace YQS
 	{
 		float t;
 		Vector3 p;
-		Vector3 normal;
+		Vector3 normal;	//法线，并且始终为单位向量
 		Material* mat_ptr;
 	};
 

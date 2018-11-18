@@ -58,7 +58,7 @@ YQS::Vector3 color(const YQS::Ray &ray, YQS::Hitable* world, int depth)
 	{
 		YQS::Ray scattered;						//经过此次散射后的新光线
 		YQS::Vector3 attenuation(1, 1, 1);		//每次散射后光强衰减系数
-		if (depth < 200 && rec.mat_ptr->scatter(ray, rec, attenuation, scattered))	//光线最多散射300次
+		if (depth < 200 && rec.mat_ptr->scatter(ray, rec, attenuation, scattered))	//光线最多散射200次
 		{
 			return attenuation * color(scattered, world, depth + 1);
 		}
@@ -75,9 +75,9 @@ YQS::Vector3 color(const YQS::Ray &ray, YQS::Hitable* world, int depth)
 	}
 }
 
-int const nx = 200;	//生成图片长度
-int const ny = 100;	//生成图片宽度
-int ns = 50;		//每个像素需要进行光线追踪的次数
+int const nx = 800;	//生成图片长度
+int const ny = 600;	//生成图片宽度
+int ns = 100;		//每个像素需要进行光线追踪的次数
 YQS::Vector3 image[nx][ny];
 YQS::Camera* camera;
 
@@ -99,14 +99,14 @@ void cal_pixel_thread(int i, int j, YQS::Hitable* world)
 
 int main()
 {
-/*
-	YQS::Hitable *list[5];	//场景中生成五个物体
-	list[0] = new YQS::Sphere(YQS::Vector3(0, 0, -1), 0.5f, new YQS::Lambertian(YQS::Vector3(0.1f, 0.2f, 0.5f)));
-	list[1] = new YQS::Sphere(YQS::Vector3(0, -100.5f, -1), 100, new YQS::Lambertian(YQS::Vector3(0.8f, 0.8f, 0.0f)));
-	list[2] = new YQS::Sphere(YQS::Vector3(1.0f, 0, -1.0f), 0.5f, new YQS::Metal(YQS::Vector3(0.8f, 0.6f, 0.2f), 0.2f));
-	list[3] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), 0.5f, new YQS::Dielectric(1.5f));
-	list[4] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), -0.5f, new YQS::Dielectric(1.5f));
-*/
+	/*
+		YQS::Hitable *list[5];	//场景中生成五个物体
+		list[0] = new YQS::Sphere(YQS::Vector3(0, 0, -1), 0.5f, new YQS::Lambertian(YQS::Vector3(0.1f, 0.2f, 0.5f)));
+		list[1] = new YQS::Sphere(YQS::Vector3(0, -100.5f, -1), 100, new YQS::Lambertian(YQS::Vector3(0.8f, 0.8f, 0.0f)));
+		list[2] = new YQS::Sphere(YQS::Vector3(1.0f, 0, -1.0f), 0.5f, new YQS::Metal(YQS::Vector3(0.8f, 0.6f, 0.2f), 0.2f));
+		list[3] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), 0.5f, new YQS::Dielectric(1.5f));
+		list[4] = new YQS::Sphere(YQS::Vector3(-1.0f, 0, -1.0f), -0.5f, new YQS::Dielectric(1.5f));
+	*/
 	YQS::Vector3 lookfrom(13, 2, 3);	//摄像机坐标
 	YQS::Vector3 lookat(0, 0, 0);		//摄像机朝向
 	float dist_to_focus = 10.0f;		//焦距
@@ -117,7 +117,7 @@ int main()
 	std::ofstream outFile;
 	YQS::srand48(static_cast<unsigned int>(time(nullptr)));
 	clock_t start = clock();	//开始计时
-	outFile.open("Chapter12_04.ppm");
+	outFile.open("Chapter12_05_800X600.ppm");
 	outFile << "P3\n" << nx << " " << ny << "\n255\n";
 	std::vector<std::thread*> threads;	//存储所有的像素计算的子线程
 	for (int j = ny - 1; j >= 0; j--)
@@ -128,13 +128,20 @@ int main()
 			threads.push_back(t);
 		}
 	}
-	for(auto it = threads.begin();it < threads.end();++it)
+	for (auto it = threads.begin(); it < threads.end(); ++it)
 	{
-		(**it).join();
+		if((**it).joinable())
+		{
+			(**it).join();
+		}
+		else
+		{
+			--it;
+		}
 	}
-	for(int j = 0;j < ny;j++)
+	for (int j = 0; j < ny; j++)
 	{
-		for(int i = 0;i < nx;i++)
+		for (int i = 0; i < nx; i++)
 		{
 			outFile << static_cast<int>(255.9f * image[i][j].r()) << " " << static_cast<int>(255.9f * image[i][j].g()) << " " << static_cast<int>(255.9f * image[i][j].b()) << " ";
 		}

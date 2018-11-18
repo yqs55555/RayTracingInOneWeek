@@ -3,7 +3,7 @@
 
 namespace YQS
 {
-	
+	//金属材质，
 	class Metal : public Material
 	{
 	public:
@@ -20,7 +20,7 @@ namespace YQS
 			return (Vector3::dot(scattered.direction(), rec.normal) > 0);
 		}
 		Vector3 albedo;
-		float fuzz;
+		float fuzz;		//金属表面的磨损程度
 	};
 }
 
