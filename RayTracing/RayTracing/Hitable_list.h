@@ -12,6 +12,11 @@ namespace YQS
 		{
 			
 		}
+
+		~Hitable_list()
+		{
+			delete[] list;
+		}
 		//ray:光线 t_min:光线最短碰撞距离 t_max光线最远碰撞距离 rec光线碰撞到的第一个物体 
 		bool hit(const Ray& ray, float t_min, float t_max, Hit_record& rec) const override
 		{

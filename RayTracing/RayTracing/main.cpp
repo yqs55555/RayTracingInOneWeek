@@ -144,6 +144,8 @@ int main()
 		for (int i = 0; i < nx; i++)
 		{
 			outFile << static_cast<int>(255.9f * image[i][j].r()) << " " << static_cast<int>(255.9f * image[i][j].g()) << " " << static_cast<int>(255.9f * image[i][j].b()) << " ";
+			delete threads.back();
+			threads.pop_back();
 		}
 		outFile << "\n";
 	}

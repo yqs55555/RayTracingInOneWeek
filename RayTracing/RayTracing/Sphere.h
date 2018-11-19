@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Hitable.h"
+#include "Material.h"
+
 namespace YQS
 {
 	//ÇòĞÎÅö×²Ìå
@@ -17,6 +19,11 @@ namespace YQS
 			:center(center),radius(r), mat_ptr(mat)
 		{
 			
+		}
+
+		~Sphere()
+		{
+			delete mat_ptr;
 		}
 
 		bool hit(const Ray& ray, float t_min, float t_max, Hit_record& rec) const override
